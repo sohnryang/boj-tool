@@ -13,7 +13,9 @@ def initialize():
         os.makedirs(data_dir)
 
 def auth_user(username, password):
-    data = {'login_user_id': username, 'login_password': password}
+    data = {'login_user_id': username,
+            'login_password': password,
+            'auto_login': 'on'}
     sess.post(boj_url + '/signin', data=data)
 
 def save_cookie(session):
@@ -22,6 +24,9 @@ def save_cookie(session):
 
 if __name__ == '__main__':
     initialize()
+    if os.path.isfile(data_dir + '/cookiefile'):
+        with open(data_dir + '/cookiefile', 'rb') as f:
+            sess.cookies.update(pickle.load(f))
     username = input()
     password = input()
     auth_user(username, password)
