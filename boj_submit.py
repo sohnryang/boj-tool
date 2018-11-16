@@ -4,6 +4,7 @@ import pickle
 import getpass
 import logging
 import logging.handlers
+import argparse
 
 from bs4 import BeautifulSoup as bs
 from xdg import XDG_DATA_HOME
@@ -55,6 +56,8 @@ def login():
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.parse_args()
     initialize()
     if os.path.isfile(data_dir + '/cookiefile'):
         with open(data_dir + '/cookiefile', 'rb') as f:
