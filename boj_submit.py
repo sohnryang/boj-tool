@@ -32,7 +32,7 @@ def auth_user(username, password):
             'auto_login': 'on'}
     logger.info('Authenticating...')
     logger.debug('Username: {0}, Password: {1}'.format(username,
-                                                        '*' * len(password)))
+                                                       '*' * len(password)))
     sess.post(boj_url + '/signin', data=data)
 
 
