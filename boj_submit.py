@@ -2,6 +2,7 @@ import os
 import requests
 import pickle
 import getpass
+import logging
 
 from bs4 import BeautifulSoup as bs
 from xdg import XDG_DATA_HOME
@@ -14,13 +15,18 @@ sess = requests.Session()
 
 def initialize():
     if not os.path.exists(data_dir):
+        logging.info('Creating directory for cookiefile...')
         os.makedirs(data_dir)
+        logging.info('Created directory for cookiefile')
 
 
 def auth_user(username, password):
     data = {'login_user_id': username,
             'login_password': password,
             'auto_login': 'on'}
+    logging.info('Authenticating...')
+    logging.info('Username: {0}, Password: {1}'.format(username,
+                                                       '*' * len(password)))
     sess.post(boj_url + '/signin', data=data)
 
 
@@ -31,7 +37,9 @@ def check_login():
 
 def save_cookie(session):
     with open(cookiefile_path, 'wb') as f:
+        logging.info('Saving cookie to {0}...'.format(cookiefile_path))
         pickle.dump(session.cookies, f)
+        logging.info('Saved cookie to {0}'.format(cookiefile_path))
 
 
 def login():
