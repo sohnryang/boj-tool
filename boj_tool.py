@@ -55,7 +55,7 @@ def login():
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='boj-tool: a CLI tool for BOJ')
     parser.add_argument('-v', '--verbose', help='set log level to INFO',
                         action='store_true')
     parser.add_argument('--debug', help='set log level to DEBUG',
