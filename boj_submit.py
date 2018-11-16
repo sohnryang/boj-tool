@@ -49,10 +49,6 @@ def login():
     save_cookie(sess)
 
 
-if __name__ == '__main__':
-    main()
-
-
 def main():
     initialize()
     if os.path.isfile(data_dir + '/cookiefile'):
@@ -65,3 +61,8 @@ def main():
     else:
         logging.error('Login failed')
         os.remove(cookiefile_path)
+
+
+if __name__ == '__main__':
+    main()
+    
