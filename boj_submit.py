@@ -15,9 +15,9 @@ sess = requests.Session()
 
 def initialize():
     if not os.path.exists(data_dir):
-        logging.info('Creating directory for cookiefile...')
+        logging.debug('Creating directory for cookiefile...')
         os.makedirs(data_dir)
-        logging.info('Created directory for cookiefile')
+        logging.debug('Created directory for cookiefile')
 
 
 def auth_user(username, password):
@@ -25,8 +25,8 @@ def auth_user(username, password):
             'login_password': password,
             'auto_login': 'on'}
     logging.info('Authenticating...')
-    logging.info('Username: {0}, Password: {1}'.format(username,
-                                                       '*' * len(password)))
+    logging.debug('Username: {0}, Password: {1}'.format(username,
+                                                        '*' * len(password)))
     sess.post(boj_url + '/signin', data=data)
 
 
@@ -37,9 +37,9 @@ def check_login():
 
 def save_cookie(session):
     with open(cookiefile_path, 'wb') as f:
-        logging.info('Saving cookie to {0}...'.format(cookiefile_path))
+        logging.debug('Saving cookie to {0}...'.format(cookiefile_path))
         pickle.dump(session.cookies, f)
-        logging.info('Saved cookie to {0}'.format(cookiefile_path))
+        logging.debug('Saved cookie to {0}'.format(cookiefile_path))
 
 
 def login():
