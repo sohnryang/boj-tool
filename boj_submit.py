@@ -50,6 +50,10 @@ def login():
 
 
 if __name__ == '__main__':
+    main()
+
+
+def main():
     initialize()
     if os.path.isfile(data_dir + '/cookiefile'):
         with open(data_dir + '/cookiefile', 'rb') as f:
