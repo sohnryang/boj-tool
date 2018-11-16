@@ -1,8 +1,9 @@
 import os
 import requests
 import pickle
+import getpass
 
-from xdg import (XDG_CONFIG_HOME, XDG_DATA_HOME)
+from xdg import XDG_DATA_HOME)
 
 data_dir = XDG_DATA_HOME + '/boj-submit'
 boj_url = 'https://www.acmicpc.net'
@@ -31,7 +32,8 @@ if __name__ == '__main__':
     if os.path.isfile(data_dir + '/cookiefile'):
         with open(data_dir + '/cookiefile', 'rb') as f:
             sess.cookies.update(pickle.load(f))
-    username = input()
-    password = input()
-    auth_user(username, password)
-    save_cookie(sess)
+    else:
+        username = input()
+        password = getpass.getpass()
+        auth_user(username, password)
+        save_cookie(sess)
