@@ -3,6 +3,7 @@ import requests
 import pickle
 import getpass
 import logging
+import logging.handlers
 
 from bs4 import BeautifulSoup as bs
 from xdg import XDG_DATA_HOME
@@ -11,21 +12,25 @@ data_dir = XDG_DATA_HOME + '/boj-submit'
 boj_url = 'https://www.acmicpc.net'
 cookiefile_path = data_dir + '/cookiefile'
 sess = requests.Session()
+logger = logging.getLogger('boj-submit')
+streamHandler = logging.StreamHandler()
+logger.addHandler(streamHandler)
+logger.setLevel(logging.DEBUG)
 
 
 def initialize():
     if not os.path.exists(data_dir):
-        logging.debug('Creating directory for cookiefile...')
+        logger.debug('Creating directory for cookiefile...')
         os.makedirs(data_dir)
-        logging.debug('Created directory for cookiefile')
+        logger.debug('Created directory for cookiefile')
 
 
 def auth_user(username, password):
     data = {'login_user_id': username,
             'login_password': password,
             'auto_login': 'on'}
-    logging.info('Authenticating...')
-    logging.debug('Username: {0}, Password: {1}'.format(username,
+    logger.info('Authenticating...')
+    logger.debug('Username: {0}, Password: {1}'.format(username,
                                                         '*' * len(password)))
     sess.post(boj_url + '/signin', data=data)
 
@@ -37,9 +42,9 @@ def check_login():
 
 def save_cookie(session):
     with open(cookiefile_path, 'wb') as f:
-        logging.debug('Saving cookie to {0}...'.format(cookiefile_path))
+        logger.debug('Saving cookie to {0}...'.format(cookiefile_path))
         pickle.dump(session.cookies, f)
-        logging.debug('Saved cookie to {0}'.format(cookiefile_path))
+        logger.debug('Saved cookie to {0}'.format(cookiefile_path))
 
 
 def login():
@@ -57,12 +62,13 @@ def main():
     else:
         login()
     if check_login():
-        logging.info('Logged in')
+        logger.info('Logged in')
     else:
-        logging.error('Login failed')
+        logger.error('Login failed')
+        logger.debug('Removing cookiefile...')
         os.remove(cookiefile_path)
+        logger.debug('Removed cookiefile')
 
 
 if __name__ == '__main__':
     main()
-    
