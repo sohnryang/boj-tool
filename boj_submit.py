@@ -3,7 +3,8 @@ import requests
 import pickle
 import getpass
 
-from xdg import XDG_DATA_HOME)
+from bs4 import BeautifulSoup as bs
+from xdg import XDG_DATA_HOME
 
 data_dir = XDG_DATA_HOME + '/boj-submit'
 boj_url = 'https://www.acmicpc.net'
@@ -22,6 +23,11 @@ def auth_user(username, password):
     sess.post(boj_url + '/signin', data=data)
 
 
+def check_login():
+    soup = bs(sess.get(boj_url).text, 'html.parser')
+    return soup.find('a', {'class': 'username'}) is not None
+
+
 def save_cookie(session):
     with open(data_dir + '/cookiefile', 'wb') as f:
         pickle.dump(session.cookies, f)
@@ -37,3 +43,7 @@ if __name__ == '__main__':
         password = getpass.getpass()
         auth_user(username, password)
         save_cookie(sess)
+    if check_login():
+        print("Logged in")
+    else:
+        print("Login failed")
