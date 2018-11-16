@@ -48,10 +48,21 @@ def save_cookie(session):
 
 
 def login():
-    username = input('Username: ')
-    password = getpass.getpass()
-    auth_user(username, password)
-    save_cookie(sess)
+    if os.path.isfile(data_dir + '/cookiefile'):
+        with open(data_dir + '/cookiefile', 'rb') as f:
+            sess.cookies.update(pickle.load(f))
+    else:
+        username = input('Username: ')
+        password = getpass.getpass()
+        auth_user(username, password)
+        save_cookie(sess)
+    if check_login():
+        logger.info('Logged in')
+    else:
+        logger.error('Login failed')
+        logger.debug('Removing cookiefile...')
+        os.remove(cookiefile_path)
+        logger.debug('Removed cookiefile')
 
 
 def main():
@@ -60,26 +71,18 @@ def main():
                         action='store_true')
     parser.add_argument('--debug', help='set log level to DEBUG',
                         action='store_true')
+    subparsers = parser.add_subparsers(dest='subparser')
+    login_parser = subparsers.add_parser('login')
     args = parser.parse_args()
-    initialize()
 
+    initialize()
     if args.verbose:
         logger.setLevel(logging.INFO)
     elif args.debug:
         logger.setLevel(logging.DEBUG)
 
-    if os.path.isfile(data_dir + '/cookiefile'):
-        with open(data_dir + '/cookiefile', 'rb') as f:
-            sess.cookies.update(pickle.load(f))
-    else:
+    if args.subparser == 'login':
         login()
-    if check_login():
-        logger.info('Logged in')
-    else:
-        logger.error('Login failed')
-        logger.debug('Removing cookiefile...')
-        os.remove(cookiefile_path)
-        logger.debug('Removed cookiefile')
 
 
 if __name__ == '__main__':
