@@ -16,7 +16,6 @@ sess = requests.Session()
 logger = logging.getLogger('boj-submit')
 streamHandler = logging.StreamHandler()
 logger.addHandler(streamHandler)
-logger.setLevel(logging.DEBUG)
 
 
 def initialize():
@@ -57,8 +56,18 @@ def login():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.parse_args()
+    parser.add_argument('-v', '--verbose', help='set log level to INFO',
+                        action='store_true')
+    parser.add_argument('--debug', help='set log level to DEBUG',
+                        action='store_true')
+    args = parser.parse_args()
     initialize()
+
+    if args.verbose:
+        logger.setLevel(logging.INFO)
+    elif args.debug:
+        logger.setLevel(logging.DEBUG)
+
     if os.path.isfile(data_dir + '/cookiefile'):
         with open(data_dir + '/cookiefile', 'rb') as f:
             sess.cookies.update(pickle.load(f))
