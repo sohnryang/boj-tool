@@ -57,7 +57,7 @@ if __name__ == '__main__':
     else:
         login()
     if check_login():
-        print('Logged in')
+        logging.info('Logged in')
     else:
-        print('Login failed')
+        logging.error('Login failed')
         os.remove(cookiefile_path)
