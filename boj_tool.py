@@ -9,11 +9,11 @@ import argparse
 from bs4 import BeautifulSoup as bs
 from xdg import XDG_DATA_HOME
 
-data_dir = XDG_DATA_HOME + '/boj-submit'
+data_dir = XDG_DATA_HOME + '/boj-tool'
 boj_url = 'https://www.acmicpc.net'
 cookiefile_path = data_dir + '/cookiefile'
 sess = requests.Session()
-logger = logging.getLogger('boj-submit')
+logger = logging.getLogger('boj-tool')
 streamHandler = logging.StreamHandler()
 logger.addHandler(streamHandler)
 
