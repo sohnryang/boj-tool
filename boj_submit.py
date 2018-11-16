@@ -8,6 +8,7 @@ from xdg import XDG_DATA_HOME
 
 data_dir = XDG_DATA_HOME + '/boj-submit'
 boj_url = 'https://www.acmicpc.net'
+cookiefile_path = data_dir + '/cookiefile'
 sess = requests.Session()
 
 
@@ -29,8 +30,15 @@ def check_login():
 
 
 def save_cookie(session):
-    with open(data_dir + '/cookiefile', 'wb') as f:
+    with open(cookiefile_path, 'wb') as f:
         pickle.dump(session.cookies, f)
+
+
+def login():
+    username = input('Username: ')
+    password = getpass.getpass()
+    auth_user(username, password)
+    save_cookie(sess)
 
 
 if __name__ == '__main__':
@@ -39,11 +47,9 @@ if __name__ == '__main__':
         with open(data_dir + '/cookiefile', 'rb') as f:
             sess.cookies.update(pickle.load(f))
     else:
-        username = input()
-        password = getpass.getpass()
-        auth_user(username, password)
-        save_cookie(sess)
+        login()
     if check_login():
-        print("Logged in")
+        print('Logged in')
     else:
-        print("Login failed")
+        print('Login failed')
+        os.remove(cookiefile_path)
