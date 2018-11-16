@@ -12,6 +12,7 @@ from xdg import XDG_DATA_HOME
 data_dir = XDG_DATA_HOME + '/boj-tool'
 boj_url = 'https://www.acmicpc.net'
 cookiefile_path = data_dir + '/cookiefile'
+username = ''
 sess = requests.Session()
 logger = logging.getLogger('boj-tool')
 streamHandler = logging.StreamHandler()
@@ -65,15 +66,62 @@ def login():
         logger.debug('Removed cookiefile')
 
 
+def submit(number, filename):
+    soup = bs(sess.get(boj_url + '/submit/' + str(number)).text, 'html.parser')
+    key = soup.find('input', {'name': 'csrf_key'})['value']
+    # TODO: add more languages
+    language_code = 88 # default is C++14
+    file_ext = os.path.splitext(filename)
+    if file_ext in ['.cc', '.cpp', '.c++']:
+        language_code = 88
+    elif file_ext == '.py':
+        language_code = 28
+    elif file_ext == '.java':
+        language_code = 3
+    elif file_ext == '.txt':
+        language_code = 58
+    elif file_ext == '.js':
+        language_code = 17
+    code = ''
+    with open(filename, 'r') as f:
+        code = f.read()
+
+    data = {
+        'problem_id': number,
+        'source': code,
+        'language': language_code,
+        'code_open': 'open',
+        'csrf_key': key
+    }
+    sess.post(boj_url + '/submit/' + str(number), data=data)
+
+
+def print_result(number, username):
+    done = False
+    while not done:
+        _url = boj_url + "/status?from_mine=1&problem_id=" + number + "&user_id=" + username
+        soup = bs(sess.get(_url).text, 'html.parser')
+        text = soup.find('span', {'class': 'result-text'}).find('span').string.strip()
+        print("\r                          ", end='')
+        print("\r%s" % text, end='')
+        if text in result:
+            done = True
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(description='boj-tool: a CLI tool for BOJ')
     parser.add_argument('-v', '--verbose', help='set log level to INFO',
                         action='store_true')
-    parser.add_argument('--debug', help='set log level to DEBUG',
+    parser.add_argument('-d', '--debug', help='set log level to DEBUG',
                         action='store_true')
     subparsers = parser.add_subparsers(dest='subparser')
     login_parser = subparsers.add_parser('login')
+    submit_parser = subparsers.add_parser('submit')
+    submit_parser.add_argument('number', type=int, help='the problem number')
+    submit_parser.add_argument('filename', help='filename to submit')
     args = parser.parse_args()
+    print(args)
 
     initialize()
     if args.verbose:
@@ -83,6 +131,9 @@ def main():
 
     if args.subparser == 'login':
         login()
+    elif args.subparser == 'submit':
+        submit(args.number, args.filename)
+        print_result(args.number, username)
 
 
 if __name__ == '__main__':
