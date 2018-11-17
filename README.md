@@ -22,5 +22,14 @@
 - Text
 - 아희
 
+## 기능
+- 쿠키를 이용한 로그인 정보 저장 (컴퓨터에 ID/Password가 저장되지 않는다.)
+- 설정 파일을 통한 언어의 컴파일러, 버전 지정
+- 디버깅을 위한 로깅 기능
+
+## Roadmap
+- [ ] 전적 조회 기능 (API가 만들어지면 추가 예정)
+- [ ] 모든 언어 지원 (꼭 할것은 아님)
+
 ## 라이선스
 [MIT 라이선스](https://github.com/sohnryang/boj-tool/blob/master/LICENSE)
