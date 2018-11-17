@@ -1,5 +1,11 @@
 # boj-tool
 
+## tl;dr 설치 방법
+[PyPI](https://pypi.org/project/boj-tool/)올라와 있기 때문에 간단히 설치할 수 있다.
+```
+pip install boj-tool
+```
+
 ## 무엇인가?
 [백준 온라인 저지](https://www.acmicpc.net)에 코드를 자동으로 제출하는 도구이다. 하지만 이름이 `boj-tool`인 것은 그 외에도 더 많은 기능을 지원할 예정이기 때문이다.
 
