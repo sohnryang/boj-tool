@@ -88,16 +88,24 @@ def login():
         logger.info('Removed cookiefile')
 
 
+def get_compiler(lang, default):
+    if 'Compiler' in config[lang]:
+        return config[lang]['Compiler']
+    return default
+
+
+def get_version(lang, default):
+    if 'Version' in config[lang]:
+        return config[lang]['Version']
+    return default
+
+
 def get_lang_code(ext):
     if ext in ['.cc', '.cpp', '.c++']:
         if 'C++' not in config:
             return 88 # default is C++14
-        compiler = 'g++'
-        version = 'C++14'
-        if 'Compiler' in config['C++']:
-            compiler = config['C++']['Compiler']
-        if 'Version' in config['C++']:
-            version = config['C++']['Version']
+        compiler = get_compiler('C++', default='g++')
+        version = get_version('C++', default='C++14')
         if compiler.lower() == 'g++':
             if '11' in version:
                 return 49
@@ -114,21 +122,69 @@ def get_lang_code(ext):
                 return 67
             elif '17' in version:
                 return 85
+            else:
+                logger.error('Invalid C++ version: {0}'.format(version))
         else:
             logger.error('Invalid C++ compiler: {0}'.format(compiler))
     elif ext == '.c':
-        return 0
+        if 'C' not in config:
+            return 75 # default is C11
+        compiler = get_compiler('C', default='gcc')
+        version = get_version('C', default='C11')
+        if compiler.lower() == 'gcc':
+            if '11' in version:
+                return 75
+            elif version == 'C':
+                return 0
+            else:
+                logger.error('Invalid C version: {0}'.format(version))
+        elif compiler.lower() == 'clang':
+            if '11' in version:
+                return 77
+            elif version == 'C':
+                return 59
+            else:
+                logger.error('Invalid C version: {0}'.format(version))
+        else:
+            logger.error('Invalid C compiler: {0}'.format(compiler))
     elif ext == '.py':
-        return 28
+        if 'Python' not in config:
+            return 28 # default is CPython 3
+        compiler = get_compiler('Python', default='CPython')
+        version = get_version('Python', default='3')
+        if compiler.lower() == 'cpython':
+            if '2' in version:
+                return 6;
+            elif '3' in version:
+                return 28
+            else:
+                logger.error('Invalid Python version: {0}'.format(version))
+        elif compiler.lower() == 'pypy':
+            if '2' in version:
+                return 32
+            elif '3' in version:
+                return 73
+            else:
+                logger.error('Invalid Python version: {0}'.format(version))
+        else:
+            logger.error('Invalid Python interpreter: {0}'.format(compiler))
     elif ext == '.java':
-        return 3
+        if 'Java' not in config:
+            return 3 # default is Java (oracle)
+        compiler = get_compiler('Java', default='Oracle')
+        if compiler.lower() == 'oracle':
+            return 3;
+        elif compiler.lower() == 'openjdk':
+            return 91
+        else:
+            logger.error('Invalid Java compiler: {0}'.format(compiler))
     elif ext == '.txt':
         return 58
     elif ext == '.js':
         return 17
     elif ext == '.aheui':
         return 83
-    return 88
+    return 88 # fallback
 
 
 def submit(number, filename):
@@ -158,6 +214,33 @@ def get_username():
     return soup.find('a', {'class': 'username'}).get_text()
 
 
+def convert_msg(msg):
+    if '채점 준비 중' in msg:
+        msg = '\u001b[33mPreparing...\u001b[0m'
+        return msg
+    elif '채점 중' in msg:
+        msg = msg.replace('채점 중', '\u001b[33mJudging...')
+        msg += '\u001b[0m'
+        return msg
+    conversion_table = {
+        '맞았습니다!!': '\u001b[32mAC\u001b[0m',
+        '20점': '\u001b[33mPartial (20)\u001b[0m',
+        '40점': '\u001b[33mPartial (40)\u001b[0m',
+        '60점': '\u001b[33mPartial (60)\u001b[0m',
+        '80점': '\u001b[33mPartial (80)\u001b[0m',
+        '100점': '\u001b[33mPartial (100)\u001b[0m',
+        '출력 형식이 잘못되었습니다': '\u001b[31mPE\u001b[0m',
+        '틀렸습니다': '\u001b[31mWA\u001b[0m',
+        '시간 초과': '\u001b[31mTLE\u001b[0m',
+        '메모리 초과': '\u001b[31mMLE\u001b[0m',
+        '출력 초과': '\u001b[31mPLE\u001b[0m',
+        '런타임 에러': '\u001b[34mRTE\u001b[0m',
+        '컴파일 에러': '\u001b[34mCompile Error\u001b[0m',
+        '기다리는 중': '\u001b[33mWaiting...\u001b[0m'
+    }
+    return conversion_table[msg]
+
+
 def print_result(number):
     done = False
     while not done:
@@ -174,32 +257,6 @@ def print_result(number):
         if text in result:
             done = True
     print()
-
-
-def convert_msg(msg):
-    if '채점 준비 중' in msg:
-        msg = '\u001b[33mPreparing...\u001b[0m'
-        return msg
-    elif '채점 중' in msg:
-        msg.replace('채점 중', '\u001b[33mJudging...')
-        msg += '\u001b[0m'
-        return msg
-    conversion_table = {
-        '맞았습니다!!': '\u001b[32mAC\u001b[0m',
-        '20점': '\u001b[33mPartial (20)\u001b[0m',
-        '40점': '\u001b[33mPartial (40)\u001b[0m',
-        '60점': '\u001b[33mPartial (60)\u001b[0m',
-        '80점': '\u001b[33mPartial (80)\u001b[0m',
-        '100점': '\u001b[33mPartial (100)\u001b[0m',
-        '출력 형식이 잘못되었습니다': '\u001b[31mPE\u001b[0m',
-        '틀렸습니다': '\u001b[31mWA\u001b[0m',
-        '시간 초과': '\u001b[31mTLE\u001b[0m',
-        '메모리 초과': '\u001b[31mMLE\u001b[0m',
-        '출력 초과': '\u001b[31mPLE\u001b[0m',
-        '런타임 에러': '\u001b[34mRTE\u001b[0m',
-        '컴파일 에러': '\u001b[34mCompile Error\u001b[0m'
-    }
-    return conversion_table[msg]
 
 
 def main():
