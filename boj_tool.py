@@ -132,10 +132,35 @@ def print_result(number):
         text = soup.find('span',
                          {'class': 'result-text'}).find('span').string.strip()
         print('\r' + ' ' * 20, end='')
-        print('\r{0}'.format(text), end='')
+        print('\r{0}'.format(convert_msg(text)), end='')
         if text in result:
             done = True
     print()
+
+
+def convert_msg(msg):
+    if '채점 준비 중' in msg:
+        msg = '\u001b[33mPreparing...\u001b[0m'
+        return msg
+    elif '채점 중' in msg:
+        msg.replace('채점 중', '\u001b[33mJudging...\u001b[0m')
+        return msg
+    conversion_table = {
+        '맞았습니다!!': '\u001b[32mAC\u001b[0m',
+        '20점': '\u001b[33mPartial (20)\u001b[0m',
+        '40점': '\u001b[33mPartial (40)\u001b[0m',
+        '60점': '\u001b[33mPartial (60)\u001b[0m',
+        '80점': '\u001b[33mPartial (80)\u001b[0m',
+        '100점': '\u001b[33mPartial (100)\u001b[0m',
+        '출력 형식이 잘못되었습니다': '\u001b[31mPE\u001b[0m',
+        '틀렸습니다': '\u001b[31mWA\u001b[0m',
+        '시간 초과': '\u001b[31mTLE\u001b[0m',
+        '메모리 초과': '\u001b[31mMLE\u001b[0m',
+        '출력 초과': '\u001b[31mPLE\u001b[0m',
+        '런타임 에러': '\u001b[34mRTE\u001b[0m',
+        '컴파일 에러': '\u001b[34mCompile Error\u001b[0m'
+    }
+    return conversion_table[msg]
 
 
 def main():
