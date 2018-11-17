@@ -10,3 +10,6 @@
 - [기존에 있던](https://github.com/sjy366/BOJ-Auto-Submit) [도구들](https://github.com/Baekjoon/submit-tool)이 내가 원하는 것과 미세하게 달랐다.
 - 뭔가 코딩하고 싶었다.
 - 과고 떨어져서 스트레스를 풀고 싶었다.
+
+## 라이선스
+[MIT 라이선스](https://github.com/sohnryang/boj-tool/blob/master/LICENSE)
