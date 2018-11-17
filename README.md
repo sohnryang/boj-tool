@@ -1,7 +1,7 @@
 # boj-tool
 
 ## tl;dr 설치 방법
-[PyPI](https://pypi.org/project/boj-tool/)올라와 있기 때문에 간단히 설치할 수 있다.
+[PyPI](https://pypi.org/project/boj-tool/)에 올라와 있기 때문에 간단히 설치할 수 있다.
 ```
 pip install boj-tool
 ```
