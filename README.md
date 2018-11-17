@@ -1,4 +1,6 @@
 # boj-tool
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/sohnryang/boj-tool/pulls)
+![Python 3](https://img.shields.io/badge/python-3-blue.svg)
 
 ## tl;dr 설치/사용 방법
 
