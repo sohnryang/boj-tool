@@ -12,7 +12,6 @@ from xdg import XDG_DATA_HOME
 data_dir = XDG_DATA_HOME + '/boj-tool'
 boj_url = 'https://www.acmicpc.net'
 cookiefile_path = data_dir + '/cookiefile'
-username = ''
 sess = requests.Session()
 logger = logging.getLogger('boj-tool')
 streamHandler = logging.StreamHandler()
@@ -27,6 +26,7 @@ def initialize():
 
 
 def auth_user(username, password):
+    soup = bs(sess.get(boj_url).text, 'html.parser')
     data = {'login_user_id': username,
             'login_password': password,
             'auto_login': 'on'}
@@ -99,9 +99,14 @@ def submit(number, filename):
 def print_result(number, username):
     done = False
     while not done:
-        _url = boj_url + "/status?from_mine=1&problem_id=" + number + "&user_id=" + username
+        logging.debug('Getting username from HTML...')
+        username = soup.find('a', {'class': 'username'}).get_text()
+        logging.debug('Username is {0}'.format(username))
+        _url = boj_url + "/status?from_mine=1&problem_id=" + number + "&user_id=" +\
+               username
         soup = bs(sess.get(_url).text, 'html.parser')
-        text = soup.find('span', {'class': 'result-text'}).find('span').string.strip()
+        text = soup.find('span',
+                         {'class': 'result-text'}).find('span').string.strip()
         print("\r                          ", end='')
         print("\r%s" % text, end='')
         if text in result:
