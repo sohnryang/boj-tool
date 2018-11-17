@@ -13,14 +13,26 @@ data_dir = XDG_DATA_HOME + '/boj-tool'
 boj_url = 'https://www.acmicpc.net'
 cookiefile_path = data_dir + '/cookiefile'
 sess = requests.Session()
+
 logger = logging.getLogger('boj-tool')
 streamHandler = logging.StreamHandler()
 logger.addHandler(streamHandler)
+
 result = {
     '맞았습니다!!',
     '20점', '40점', '60점', '80점', '100점',
     '출력 형식이 잘못되었습니다', '틀렸습니다', '시간 초과',
     '메모리 초과', '출력 초과', '런타임 에러', '컴파일 에러'
+}
+lang_version_default = {
+    'c++': 'c++14',
+    'c': 'c11',
+    'python': '3'
+}
+lang_compiler_default= {
+    'c++': 'g++',
+    'c': 'gcc',
+    'python': 'cpython'
 }
 
 
