@@ -11,5 +11,16 @@
 - 뭔가 코딩하고 싶었다.
 - 과고 떨어져서 스트레스를 풀고 싶었다.
 
+## 지원 언어
+> 참고: 이 리스트에 없는 언어가 없으면 [Issue](https://github.com/sohnryang/boj-tool/issues)를 만들거나 [PR](https://github.com/sohnryang/boj-tool/pulls)을 보내면 지원 추가 예정이다.
+
+- C++ (Clang, C++14, C++17 등 모두 지원)
+- C (Clang, C11 등 모두 지원)
+- Python (2, 3, pypy 등 모두 지원)
+- Java (Oracle Java와 OpenJDK 모두 지원)
+- JavaScript
+- Text
+- 아희
+
 ## 라이선스
 [MIT 라이선스](https://github.com/sohnryang/boj-tool/blob/master/LICENSE)
