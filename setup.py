@@ -14,7 +14,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='boj-tool',
-      version='1.0.0',
+      version='1.0.2',
       description='A tool for submitting to BOJ',
       long_description=long_description,
       long_description_content_type='text/markdown',
