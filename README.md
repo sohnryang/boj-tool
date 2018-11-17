@@ -1,9 +1,21 @@
 # boj-tool
 
-## tl;dr 설치 방법
+## tl;dr 설치/사용 방법
+
+### 설치
 [PyPI](https://pypi.org/project/boj-tool/)에 올라와 있기 때문에 간단히 설치할 수 있다.
 ```
 pip install boj-tool
+```
+
+### 사용법
+- 로그인은 다음과 같이 할 수 있다.
+```
+boj login
+```
+- 다음과 같이 코드를 제출할 수 있다.
+```
+boj submit $(문제 번호) $(제출할 코드 경로)
 ```
 
 ## 무엇인가?
