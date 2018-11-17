@@ -193,7 +193,7 @@ def submit(number, filename):
                                                                  filename))
     soup = bs(sess.get(boj_url + '/submit/' + str(number)).text, 'html.parser')
     key = soup.find('input', {'name': 'csrf_key'})['value']
-    file_ext = os.path.splitext(filename)
+    file_ext = os.path.splitext(filename)[1]
     language_code = get_lang_code(file_ext)
     code = ''
     with open(filename, 'r') as f:
