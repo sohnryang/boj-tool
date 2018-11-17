@@ -79,28 +79,32 @@ def login():
         logger.info('Removed cookiefile')
 
 
+def get_lang_code(ext):
+    if ext in ['.cc', '.cpp', '.c++']:
+        return 88
+    elif ext == '.c':
+        return 0
+    elif ext == '.py':
+        return 28
+    elif ext == '.java':
+        return 3
+    elif ext == '.txt':
+        return 58
+    elif ext == '.js':
+        return 17
+    elif ext == '.aheui':
+        return 83
+    return 88
+
+
 def submit(number, filename):
     load_cookie()
     logger.debug('Problem number is {0}, filename is {1}'.format(number,
                                                                  filename))
     soup = bs(sess.get(boj_url + '/submit/' + str(number)).text, 'html.parser')
     key = soup.find('input', {'name': 'csrf_key'})['value']
-    language_code = 88
     file_ext = os.path.splitext(filename)
-    if file_ext in ['.cc', '.cpp', '.c++']:
-        language_code = 88
-    elif file_ext == '.c':
-        language_code = 0
-    elif file_ext == '.py':
-        language_code = 28
-    elif file_ext == '.java':
-        language_code = 3
-    elif file_ext == '.txt':
-        language_code = 58
-    elif file_ext == '.js':
-        language_code = 17
-    elif file_ext == '.aheui':
-        language_code = 83
+    language_code = get_lang_code(file_ext)
     code = ''
     with open(filename, 'r') as f:
         code = f.read()
@@ -143,7 +147,8 @@ def convert_msg(msg):
         msg = '\u001b[33mPreparing...\u001b[0m'
         return msg
     elif '채점 중' in msg:
-        msg.replace('채점 중', '\u001b[33mJudging...\u001b[0m')
+        msg.replace('채점 중', '\u001b[33mJudging...')
+        msg += '\u001b[0m'
         return msg
     conversion_table = {
         '맞았습니다!!': '\u001b[32mAC\u001b[0m',
