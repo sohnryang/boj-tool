@@ -5,6 +5,7 @@ import logging
 import logging.handlers
 import os
 import pickle
+import re
 import requests
 
 from bs4 import BeautifulSoup as bs
@@ -25,12 +26,6 @@ streamHandler = logging.StreamHandler()
 logger.addHandler(streamHandler)
 config = configparser.ConfigParser()
 
-result = {
-    '맞았습니다!!',
-    '20점', '40점', '60점', '80점', '100점',
-    '출력 형식이 잘못되었습니다', '틀렸습니다', '시간 초과',
-    '메모리 초과', '출력 초과', '런타임 에러', '컴파일 에러'
-}
 
 
 def initialize():
@@ -225,13 +220,11 @@ def convert_msg(msg):
         msg = msg.replace('채점 중', Fore.YELLOW + 'Judging...')
         msg += Style.RESET_ALL
         return msg
+    elif re.match(r'^\d+점$', msg) is not None:
+        msg = Fore.YELLOW + 'Partial ({0})'.format(re.match(r'\d+', msg)[0])
+        return msg + Style.RESET_ALL
     conversion_table = {
         '맞았습니다!!': Fore.GREEN + 'AC',
-        '20점': Fore.YELLOW + 'Partial (20)',
-        '40점': Fore.YELLOW + 'Partial (40)',
-        '60점': Fore.YELLOW + 'Partial (60)',
-        '80점': Fore.YELLOW + 'Partial (80)',
-        '100점': Fore.YELLOW + 'Partial (100)',
         '출력 형식이 잘못되었습니다': Fore.RED + 'PE',
         '틀렸습니다': Fore.RED + 'WA',
         '시간 초과': Fore.RED + 'TLE',
@@ -244,21 +237,31 @@ def convert_msg(msg):
     return conversion_table[msg] + Style.RESET_ALL
 
 
+def check_finished(text):
+    if re.fullmatch(r'^\d+점$', text):
+        return True
+    result = {
+        '맞았습니다!!',
+        '출력 형식이 잘못되었습니다', '틀렸습니다', '시간 초과',
+        '메모리 초과', '출력 초과', '런타임 에러', '컴파일 에러'
+    }
+    return text in result
+
+
 def print_result(number):
     done = False
     while not done:
         logger.debug('Getting username from HTML...')
         username = get_username()
         logger.debug('Username is {0}'.format(username))
-        _url = boj_url + "/status?from_mine=1&problem_id=" + str(number) +\
-               "&user_id=" + username
-        soup = bs(sess.get(_url).text, 'html.parser')
+        result_url = boj_url + "/status?from_mine=1&problem_id=" + str(number) +\
+                    "&user_id=" + username
+        soup = bs(sess.get(result_url).text, 'html.parser')
         text = soup.find('span',
                          {'class': 'result-text'}).find('span').string.strip()
         print('\r' + ' ' * 20, end='')
         print('\r{0}'.format(convert_msg(text)), end='')
-        if text in result:
-            done = True
+        done = check_finished(text)
     print()
 
 
