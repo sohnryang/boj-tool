@@ -1,38 +1,32 @@
-import os
-import requests
-import pickle
+import argparse
+import configparser
 import getpass
 import logging
 import logging.handlers
-import argparse
+import os
+import pickle
+import requests
 
 from bs4 import BeautifulSoup as bs
-from xdg import XDG_DATA_HOME
+from xdg import (XDG_CONFIG_HOME, XDG_DATA_HOME)
 
 data_dir = XDG_DATA_HOME + '/boj-tool'
+config_dir = XDG_CONFIG_HOME + '/boj-tool'
 boj_url = 'https://www.acmicpc.net'
 cookiefile_path = data_dir + '/cookiefile'
+configfile_path = config_dir + '/config'
 sess = requests.Session()
 
 logger = logging.getLogger('boj-tool')
 streamHandler = logging.StreamHandler()
 logger.addHandler(streamHandler)
+config = configparser.ConfigParser()
 
 result = {
     '맞았습니다!!',
     '20점', '40점', '60점', '80점', '100점',
     '출력 형식이 잘못되었습니다', '틀렸습니다', '시간 초과',
     '메모리 초과', '출력 초과', '런타임 에러', '컴파일 에러'
-}
-lang_version_default = {
-    'c++': 'c++14',
-    'c': 'c11',
-    'python': '3'
-}
-lang_compiler_default= {
-    'c++': 'g++',
-    'c': 'gcc',
-    'python': 'cpython'
 }
 
 
@@ -41,6 +35,9 @@ def initialize():
         logger.debug('Creating directory for cookiefile...')
         os.makedirs(data_dir)
         logger.debug('Created directory for cookiefile')
+    if os.path.isfile(configfile_path):
+        logger.debug('Config file found')
+        config.read(configfile_path)
 
 
 def auth_user(username, password):
@@ -93,7 +90,32 @@ def login():
 
 def get_lang_code(ext):
     if ext in ['.cc', '.cpp', '.c++']:
-        return 88
+        if 'C++' not in config:
+            return 88 # default is C++14
+        compiler = 'g++'
+        version = 'C++14'
+        if 'Compiler' in config['C++']:
+            compiler = config['C++']['Compiler']
+        if 'Version' in config['C++']:
+            version = config['C++']['Version']
+        if compiler.lower() == 'g++':
+            if '11' in version:
+                return 49
+            elif '14' in version:
+                return 88
+            elif '17' in version:
+                return 84
+            else:
+                logger.error('Invalid C++ version: {0}'.format(version))
+        elif compiler.lower() == 'clang':
+            if '11' in version:
+                return 66
+            elif '14' in version:
+                return 67
+            elif '17' in version:
+                return 85
+        else:
+            logger.error('Invalid C++ compiler: {0}'.format(compiler))
     elif ext == '.c':
         return 0
     elif ext == '.py':
