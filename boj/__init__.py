@@ -8,7 +8,10 @@ import pickle
 import requests
 
 from bs4 import BeautifulSoup as bs
+from colorama import init, Fore, Back, Style
 from xdg import (XDG_CONFIG_HOME, XDG_DATA_HOME)
+
+init()
 
 data_dir = XDG_DATA_HOME + '/boj-tool'
 config_dir = XDG_CONFIG_HOME + '/boj-tool'
@@ -216,29 +219,29 @@ def get_username():
 
 def convert_msg(msg):
     if '채점 준비 중' in msg:
-        msg = '\u001b[33mPreparing...\u001b[0m'
+        msg = Fore.YELLOW + 'Preparing...' + Style.RESET_ALL
         return msg
     elif '채점 중' in msg:
-        msg = msg.replace('채점 중', '\u001b[33mJudging...')
-        msg += '\u001b[0m'
+        msg = msg.replace('채점 중', Fore.YELLOW + 'Judging...')
+        msg += Style.RESET_ALL
         return msg
     conversion_table = {
-        '맞았습니다!!': '\u001b[32mAC\u001b[0m',
-        '20점': '\u001b[33mPartial (20)\u001b[0m',
-        '40점': '\u001b[33mPartial (40)\u001b[0m',
-        '60점': '\u001b[33mPartial (60)\u001b[0m',
-        '80점': '\u001b[33mPartial (80)\u001b[0m',
-        '100점': '\u001b[33mPartial (100)\u001b[0m',
-        '출력 형식이 잘못되었습니다': '\u001b[31mPE\u001b[0m',
-        '틀렸습니다': '\u001b[31mWA\u001b[0m',
-        '시간 초과': '\u001b[31mTLE\u001b[0m',
-        '메모리 초과': '\u001b[31mMLE\u001b[0m',
-        '출력 초과': '\u001b[31mPLE\u001b[0m',
-        '런타임 에러': '\u001b[34mRTE\u001b[0m',
-        '컴파일 에러': '\u001b[34mCompile Error\u001b[0m',
-        '기다리는 중': '\u001b[33mWaiting...\u001b[0m'
+        '맞았습니다!!': Fore.GREEN + 'AC',
+        '20점': Fore.YELLOW + 'Partial (20)',
+        '40점': Fore.YELLOW + 'Partial (40)',
+        '60점': Fore.YELLOW + 'Partial (60)',
+        '80점': Fore.YELLOW + 'Partial (80)',
+        '100점': Fore.YELLOW + 'Partial (100)',
+        '출력 형식이 잘못되었습니다': Fore.RED + 'PE',
+        '틀렸습니다': Fore.RED + 'WA',
+        '시간 초과': Fore.RED + 'TLE',
+        '메모리 초과': Fore.RED + 'MLE',
+        '출력 초과': Fore.RED + 'PLE',
+        '런타임 에러': Fore.BLUE + 'RTE',
+        '컴파일 에러': Fore.BLUE + 'Compile Error',
+        '기다리는 중': Fore.YELLOW + 'Waiting...'
     }
-    return conversion_table[msg]
+    return conversion_table[msg] + Style.RESET_ALL
 
 
 def print_result(number):
