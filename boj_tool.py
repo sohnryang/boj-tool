@@ -16,6 +16,12 @@ sess = requests.Session()
 logger = logging.getLogger('boj-tool')
 streamHandler = logging.StreamHandler()
 logger.addHandler(streamHandler)
+result = {
+    '맞았습니다!!',
+    '20점', '40점', '60점', '80점', '100점',
+    '출력 형식이 잘못되었습니다', '틀렸습니다', '시간 초과',
+    '메모리 초과', '출력 초과', '런타임 에러', '컴파일 에러'
+}
 
 
 def initialize():
@@ -48,32 +54,43 @@ def save_cookie(session):
         logger.debug('Saved cookie to {0}'.format(cookiefile_path))
 
 
-def login():
+def load_cookie():
     if os.path.isfile(data_dir + '/cookiefile'):
+        logger.debug('Cookiefile found. Loading...')
         with open(data_dir + '/cookiefile', 'rb') as f:
             sess.cookies.update(pickle.load(f))
+        logger.info('Loaded cookiefile')
     else:
-        username = input('Username: ')
-        password = getpass.getpass()
-        auth_user(username, password)
-        save_cookie(sess)
+        logger.error('Cookiefile not found')
+        login()
+
+
+def login():
+    username = input('Username: ')
+    password = getpass.getpass()
+    auth_user(username, password)
+    save_cookie(sess)
     if check_login():
         logger.info('Logged in')
     else:
         logger.error('Login failed')
         logger.debug('Removing cookiefile...')
         os.remove(cookiefile_path)
-        logger.debug('Removed cookiefile')
+        logger.info('Removed cookiefile')
 
 
 def submit(number, filename):
+    load_cookie()
+    logger.debug('Problem number is {0}, filename is {1}'.format(number,
+                                                                 filename))
     soup = bs(sess.get(boj_url + '/submit/' + str(number)).text, 'html.parser')
     key = soup.find('input', {'name': 'csrf_key'})['value']
-    # TODO: add more languages
-    language_code = 88 # default is C++14
+    language_code = 88
     file_ext = os.path.splitext(filename)
     if file_ext in ['.cc', '.cpp', '.c++']:
         language_code = 88
+    elif file_ext == '.c':
+        language_code = 0
     elif file_ext == '.py':
         language_code = 28
     elif file_ext == '.java':
@@ -82,6 +99,8 @@ def submit(number, filename):
         language_code = 58
     elif file_ext == '.js':
         language_code = 17
+    elif file_ext == '.aheui':
+        language_code = 83
     code = ''
     with open(filename, 'r') as f:
         code = f.read()
@@ -96,19 +115,24 @@ def submit(number, filename):
     sess.post(boj_url + '/submit/' + str(number), data=data)
 
 
-def print_result(number, username):
+def get_username():
+    soup = bs(sess.get(boj_url).text, 'html.parser')
+    return soup.find('a', {'class': 'username'}).get_text()
+
+
+def print_result(number):
     done = False
     while not done:
-        logging.debug('Getting username from HTML...')
-        username = soup.find('a', {'class': 'username'}).get_text()
-        logging.debug('Username is {0}'.format(username))
-        _url = boj_url + "/status?from_mine=1&problem_id=" + number + "&user_id=" +\
-               username
+        logger.debug('Getting username from HTML...')
+        username = get_username()
+        logger.debug('Username is {0}'.format(username))
+        _url = boj_url + "/status?from_mine=1&problem_id=" + str(number) +\
+               "&user_id=" + username
         soup = bs(sess.get(_url).text, 'html.parser')
         text = soup.find('span',
                          {'class': 'result-text'}).find('span').string.strip()
-        print("\r                          ", end='')
-        print("\r%s" % text, end='')
+        print('\r' + ' ' * 20, end='')
+        print('\r{0}'.format(text), end='')
         if text in result:
             done = True
     print()
@@ -126,7 +150,6 @@ def main():
     submit_parser.add_argument('number', type=int, help='the problem number')
     submit_parser.add_argument('filename', help='filename to submit')
     args = parser.parse_args()
-    print(args)
 
     initialize()
     if args.verbose:
@@ -138,7 +161,7 @@ def main():
         login()
     elif args.subparser == 'submit':
         submit(args.number, args.filename)
-        print_result(args.number, username)
+        print_result(args.number)
 
 
 if __name__ == '__main__':
