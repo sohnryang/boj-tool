@@ -1,4 +1,5 @@
 import setuptools
+import boj
 
 from setuptools import setup
 from os import path
@@ -14,7 +15,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='boj-tool',
-      version='1.1.0',
+      version=boj.__version__,
       description='A tool for submitting to BOJ',
       long_description=long_description,
       long_description_content_type='text/markdown',
