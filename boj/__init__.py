@@ -14,6 +14,8 @@ from xdg import (XDG_CONFIG_HOME, XDG_DATA_HOME)
 
 init()
 
+__version__ = '1.1.0'
+
 data_dir = XDG_DATA_HOME + '/boj-tool'
 config_dir = XDG_CONFIG_HOME + '/boj-tool'
 boj_url = 'https://www.acmicpc.net'
@@ -296,6 +298,11 @@ def stats(username):
                    if s != '']))
 
 
+def version():
+    print('boj-tool: a CLI tool for BOJ')
+    print('v' + __version__)
+
+
 def main():
     parser = argparse.ArgumentParser(description='boj-tool: a CLI tool for BOJ')
     parser.add_argument('-v', '--verbose', help='set log level to INFO',
@@ -310,6 +317,7 @@ def main():
     stat_parser = subparsers.add_parser('stats')
     stat_parser.add_argument('-u', '--user', type=str,
                              help='the user to show stats')
+    version_parser = subparsers.add_parser('version')
     args = parser.parse_args()
 
     initialize()
@@ -325,6 +333,8 @@ def main():
         print_result(args.number)
     elif args.subparser == 'stats':
         stats(args.user)
+    elif args.subparser == 'version':
+        version()
 
 
 if __name__ == '__main__':
