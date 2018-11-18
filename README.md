@@ -5,7 +5,7 @@
 [![GitHub license](https://img.shields.io/github/license/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/stargazers)
 [![GitHub issues](https://img.shields.io/github/issues/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/issues)
-[![GitHub issues](https://img.shields.io/github/issues/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/issues)
+[![GitHub forks](https://img.shields.io/github/forks/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/network)
 
 ## tl;dr 설치/사용 방법
 
