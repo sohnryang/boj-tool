@@ -1,3 +1,9 @@
+"""
+module boj
+
+a module for logging in, submitting, getting stats from BOJ
+"""
+
 import argparse
 import configparser
 import getpass
@@ -30,6 +36,12 @@ config = configparser.ConfigParser()
 
 
 def initialize():
+    """
+    function initialize -- initialize boj-tool
+
+    This function loads cookie/config from cookifile/config file if the file
+    exists.
+    """
     if not os.path.exists(data_dir):
         logger.debug('Creating directory for cookiefile...')
         os.makedirs(data_dir)
@@ -40,6 +52,13 @@ def initialize():
 
 
 def auth_user(username, password):
+    """
+    function auth_user -- authenticate user to BOJ
+
+    params:
+    username: str -- the user's name to log in
+    password: str -- the password used in authentication
+    """
     soup = bs(sess.get(boj_url).text, 'html.parser')
     data = {'login_user_id': username,
             'login_password': password,
@@ -51,18 +70,39 @@ def auth_user(username, password):
 
 
 def check_login():
+    """
+    function check_login -- checks if the user is logged in
+
+    returns True if logged in, and False if not logged in.
+    """
     soup = bs(sess.get(boj_url).text, 'html.parser')
     return soup.find('a', {'class': 'username'}) is not None
 
 
 def save_cookie(session):
+    """
+    function save_cookie -- saves cookie to cookiefile
+
+    this function saves cookiefile to data_dir, which is
+    $XDG_DATA_HOME/boj-tool.
+
+    params:
+    session: request.Session -- the session object to extract cookie from
+    """
     with open(cookiefile_path, 'wb') as f:
         logger.debug('Saving cookie to {0}...'.format(cookiefile_path))
         pickle.dump(session.cookies, f)
-        logger.debug('Saved cookie to {0}'.format(cookiefile_path))
+        logger.info('Saved cookie to {0}'.format(cookiefile_path))
 
 
 def load_cookie():
+    """
+    function load_cookie -- loads cookie to cookiefile
+
+    This function loads cookiefile to global session object if cookiefile is
+    found. If not, the function calls login and asks user username and
+    password.
+    """
     if os.path.isfile(data_dir + '/cookiefile'):
         logger.debug('Cookiefile found. Loading...')
         with open(data_dir + '/cookiefile', 'rb') as f:
@@ -74,6 +114,13 @@ def load_cookie():
 
 
 def login():
+    """
+    function login -- logs user to BOJ
+
+    This function asks user username and password and calls auth_user. After
+    authenticating, it checks if the login was successful and saves cookie to
+    cookiefile.
+    """
     username = input('Username: ')
     password = getpass.getpass()
     auth_user(username, password)
@@ -88,18 +135,48 @@ def login():
 
 
 def get_compiler(lang, default):
+    """
+    function get_compiler -- gets compiler version from config
+
+    This function reads user-specified compiler from config file. If the
+    compiler was not found, it fall backs to the default specified.
+
+    params:
+    lang: str -- the language to look up in the config file
+    default: str -- the value to return if compiler was not found
+    """
     if 'Compiler' in config[lang]:
         return config[lang]['Compiler']
     return default
 
 
 def get_version(lang, default):
+    """
+    function get_version -- gets language version from config
+
+    This function reads user-specified version of a language from config file.
+    If the version was not found, it fall backs to the default specified.
+
+    params:
+    lang: str -- the language to look up in the config file
+    default: str -- the value to return if version was not found
+    """
     if 'Version' in config[lang]:
         return config[lang]['Version']
     return default
 
 
 def get_lang_code(ext):
+    """
+    function get_lang_code -- gets language code from specified extension
+
+    Instead of recognizing language from user-submitted code, BOJ uses
+    'language code' to know which language the user coded. This function gets
+    the language code from specified file extension.
+
+    param:
+    ext: str -- the file extension to recognize language from
+    """
     if ext in ['.cc', '.cpp', '.c++']:
         if 'C++' not in config:
             return 88 # default is C++14
@@ -153,7 +230,7 @@ def get_lang_code(ext):
         version = get_version('Python', default='3')
         if compiler.lower() == 'cpython':
             if '2' in version:
-                return 6;
+                return 6
             elif '3' in version:
                 return 28
             else:
@@ -172,7 +249,7 @@ def get_lang_code(ext):
             return 3 # default is Java (oracle)
         compiler = get_compiler('Java', default='Oracle')
         if compiler.lower() == 'oracle':
-            return 3;
+            return 3
         elif compiler.lower() == 'openjdk':
             return 91
         else:
@@ -187,6 +264,15 @@ def get_lang_code(ext):
 
 
 def submit(number, filename):
+    """
+    function submit -- submits code to BOJ
+
+    This function submits code to BOJ.
+
+    params:
+    number: int -- the problem number
+    filename: str -- the filename to submit
+    """
     load_cookie()
     logger.debug('Problem number is {0}, filename is {1}'.format(number,
                                                                  filename))
@@ -209,11 +295,24 @@ def submit(number, filename):
 
 
 def get_username():
+    """
+    function get_username -- gets username from site's HTML
+
+    This function gets username from the site's HTML.
+    """
     soup = bs(sess.get(boj_url).text, 'html.parser')
     return soup.find('a', {'class': 'username'}).get_text()
 
 
 def convert_msg(msg):
+    """
+    function convert_msg -- converts message to short formats
+
+    This function converts message from BOJ site to short format.
+
+    params:
+    msg: str -- the message to convert
+    """
     if '채점 준비 중' in msg:
         msg = Fore.YELLOW + 'Preparing...' + Style.RESET_ALL
         return msg
@@ -239,6 +338,15 @@ def convert_msg(msg):
 
 
 def check_finished(text):
+    """
+    function check_finished -- determines if the judging was complete from
+    site's text
+
+    This function determines if the judging was complete from given text.
+
+    params:
+    text: str -- the text from BOJ site
+    """
     if re.fullmatch(r'^\d+점$', text):
         return True
     result = {
@@ -250,6 +358,14 @@ def check_finished(text):
 
 
 def print_result(number):
+    """
+    function print_result -- prints submission results
+
+    This function prints submission result from problem number
+
+    params:
+    number: int -- the problem number to print result
+    """
     done = False
     while not done:
         logger.debug('Getting username from HTML...')
@@ -267,6 +383,14 @@ def print_result(number):
 
 
 def stats(username):
+    """
+    function stats -- print user's stats read from BOJ
+
+    This function prints the user's stats read from BOJ.
+
+    params:
+    username: str -- user's name
+    """
     load_cookie()
     if username is None:
         username = get_username()
@@ -295,15 +419,23 @@ def stats(username):
             print(conversion_table[tr_elem.th.get_text()], end='')
             print(', '.join(
                 [s for s in re.split(r'\t|\n', tr_elem.td.get_text().strip())
-                   if s != '']))
+                 if s != '']))
 
 
 def version():
+    """
+    function version -- prints version
+
+    This function prints version number.
+    """
     print('boj-tool: a CLI tool for BOJ')
     print('v' + __version__)
 
 
 def main():
+    """
+    function main -- main function
+    """
     parser = argparse.ArgumentParser(description='boj-tool: a CLI tool for BOJ')
     parser.add_argument('-v', '--verbose', help='set log level to INFO',
                         action='store_true')
