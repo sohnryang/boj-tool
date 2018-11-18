@@ -265,6 +265,39 @@ def print_result(number):
     print()
 
 
+def stats(username):
+    load_cookie()
+    if username is None:
+        username = get_username()
+    print('Stats of user {0}'.format(username))
+    print()
+    soup = bs(sess.get(boj_url + '/user/' + username).text, 'html.parser')
+    table_tr_elems = soup.find('table', {'id': 'statics'}).tbody.findAll('tr')
+    conversion_table = {
+        '랭킹': Fore.BLUE + 'Rank:\t\t' + Style.RESET_ALL,
+        '푼 문제': Fore.GREEN + 'Solved:\t\t' + Style.RESET_ALL,
+        '제출': Fore.YELLOW + 'Submissions:\t' + Style.RESET_ALL,
+        '맞았습니다': Fore.GREEN + 'AC count:\t' + Style.RESET_ALL,
+        '출력 형식': Fore.RED + 'PE count:\t' + Style.RESET_ALL,
+        '틀렸습니다': Fore.RED + 'WA count:\t' + Style.RESET_ALL,
+        '시간 초과': Fore.RED + 'TLE count:\t' + Style.RESET_ALL,
+        '컴파일 에러': Fore.RED + 'Compile errors:\t' + Style.RESET_ALL,
+        '메모리 초과': Fore.RED + 'MLE count:\t' + Style.RESET_ALL,
+        '출력 초과': Fore.RED + 'PLE count:\t' + Style.RESET_ALL,
+        '런타임 에러': Fore.RED + 'RTE count:\t' + Style.RESET_ALL,
+        '학교/회사': 'Organization:\t',
+        '대회 우승': Fore.GREEN + 'First place:\t' + Style.RESET_ALL,
+        '대회 준우승': Fore.CYAN + 'Second place:\t' + Style.RESET_ALL,
+    }
+    for tr_elem in table_tr_elems:
+        if tr_elem.th.get_text() in conversion_table:
+            print(conversion_table[tr_elem.th.get_text()], end='')
+            print(', '.join(list(filter(
+                lambda x: x != '',
+                re.split(r'\t|\n', tr_elem.td.get_text().strip())
+            ))))
+
+
 def main():
     parser = argparse.ArgumentParser(description='boj-tool: a CLI tool for BOJ')
     parser.add_argument('-v', '--verbose', help='set log level to INFO',
@@ -276,6 +309,9 @@ def main():
     submit_parser = subparsers.add_parser('submit')
     submit_parser.add_argument('number', type=int, help='the problem number')
     submit_parser.add_argument('filename', help='filename to submit')
+    stat_parser = subparsers.add_parser('stats')
+    stat_parser.add_argument('-u', '--user', type=str,
+                             help='the user to show stats')
     args = parser.parse_args()
 
     initialize()
@@ -289,6 +325,8 @@ def main():
     elif args.subparser == 'submit':
         submit(args.number, args.filename)
         print_result(args.number)
+    elif args.subparser == 'stats':
+        stats(args.user)
 
 
 if __name__ == '__main__':
