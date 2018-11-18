@@ -108,7 +108,7 @@ def load_cookie():
             sess.cookies.update(pickle.load(f))
         logger.info('Loaded cookiefile')
     else:
-        logger.error('Cookiefile not found')
+        logger.error('Cookiefile not found. Logging in...')
         login()
 
 
