@@ -292,10 +292,9 @@ def stats(username):
     for tr_elem in table_tr_elems:
         if tr_elem.th.get_text() in conversion_table:
             print(conversion_table[tr_elem.th.get_text()], end='')
-            print(', '.join(list(filter(
-                lambda x: x != '',
-                re.split(r'\t|\n', tr_elem.td.get_text().strip())
-            ))))
+            print(', '.join(
+                [s for s in re.split(r'\t|\n', tr_elem.td.get_text().strip())
+                   if s != '']))
 
 
 def main():
