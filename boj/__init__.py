@@ -27,7 +27,6 @@ logger.addHandler(streamHandler)
 config = configparser.ConfigParser()
 
 
-
 def initialize():
     if not os.path.exists(data_dir):
         logger.debug('Creating directory for cookiefile...')
