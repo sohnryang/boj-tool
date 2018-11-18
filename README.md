@@ -1,7 +1,11 @@
 # boj-tool
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/sohnryang/boj-tool/pulls)
 ![Python 3](https://img.shields.io/badge/python-3-blue.svg)
+[![PyPI downloads](https://img.shields.io/badge/dynamic/json.svg?label=downloads&url=https%3A%2F%2Fpypistats.org%2Fapi%2Fpackages%2Fboj-tool%2Foverall&query=%24.data%5B0%5D.downloads&colorB=blue&suffix=%20overall)](https://pypi.org/project/boj-tool/)
 [![GitHub license](https://img.shields.io/github/license/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/issues)
+[![GitHub issues](https://img.shields.io/github/issues/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/issues)
 
 ## tl;dr 설치/사용 방법
 
