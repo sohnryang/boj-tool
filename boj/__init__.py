@@ -59,7 +59,6 @@ def auth_user(username, password):
     username: str -- the user's name to log in
     password: str -- the password used in authentication
     """
-    soup = bs(sess.get(boj_url).text, 'html.parser')
     data = {'login_user_id': username,
             'login_password': password,
             'auto_login': 'on'}
