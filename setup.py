@@ -5,6 +5,7 @@ from setuptools import setup
 from os import path
 
 py_modules = [
+    'colorama',
     'requests',
     'bs4',
     'xdg'
