@@ -20,7 +20,7 @@ from xdg import (XDG_CONFIG_HOME, XDG_DATA_HOME)
 
 init()
 
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 data_dir = XDG_DATA_HOME + '/boj-tool'
 config_dir = XDG_CONFIG_HOME + '/boj-tool'
