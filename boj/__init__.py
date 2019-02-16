@@ -20,7 +20,7 @@ from xdg import (XDG_CONFIG_HOME, XDG_DATA_HOME)
 
 init()
 
-__version__ = '1.1.2'
+__version__ = '1.1.3'
 
 data_dir = XDG_DATA_HOME + '/boj-tool'
 config_dir = XDG_CONFIG_HOME + '/boj-tool'
@@ -303,7 +303,7 @@ def get_username():
     return soup.find('a', {'class': 'username'}).get_text()
 
 
-def convert_msg(msg):
+def convert_msg(msg, mem=None, rtime=None):
     """
     function convert_msg -- converts message to short formats
 
@@ -323,7 +323,7 @@ def convert_msg(msg):
         msg = Fore.YELLOW + 'Partial ({0})'.format(re.match(r'\d+', msg)[0])
         return msg + Style.RESET_ALL
     conversion_table = {
-        '맞았습니다!!': Fore.GREEN + 'AC',
+        '맞았습니다!!': Fore.GREEN + 'AC(%sKB, %sms)' % (mem, rtime),
         '출력 형식이 잘못되었습니다': Fore.RED + 'PE',
         '틀렸습니다': Fore.RED + 'WA',
         '시간 초과': Fore.RED + 'TLE',
@@ -375,8 +375,10 @@ def print_result(number):
         soup = bs(sess.get(result_url).text, 'html.parser')
         text = soup.find('span',
                          {'class': 'result-text'}).find('span').string.strip()
+        mem = soup.find('td', {'class': 'memory'}).text
+        rtime = soup.find('td', {'class': 'time'}).text
         print('\r' + ' ' * 20, end='')
-        print('\r{0}'.format(convert_msg(text)), end='')
+        print('\r{0}'.format(convert_msg(text, mem, rtime)), end='')
         done = check_finished(text)
     print()
 
