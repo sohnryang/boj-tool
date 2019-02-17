@@ -323,7 +323,7 @@ def convert_msg(msg, mem=None, rtime=None):
         msg = Fore.YELLOW + 'Partial ({0})'.format(re.match(r'\d+', msg)[0])
         return msg + Style.RESET_ALL
     conversion_table = {
-        '맞았습니다!!': Fore.GREEN + 'AC(%sKB, %sms)' % (mem, rtime),
+        '맞았습니다!!': Fore.GREEN + 'AC (%sKB, %sms)' % (mem, rtime),
         '출력 형식이 잘못되었습니다': Fore.RED + 'PE',
         '틀렸습니다': Fore.RED + 'WA',
         '시간 초과': Fore.RED + 'TLE',
