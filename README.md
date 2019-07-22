@@ -7,7 +7,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/network)
 [![GitHub issues](https://img.shields.io/github/issues/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/issues)
 
-> 현재 로그인이 되지 않는 상황이다. ([#3](https://github.com/sohnryang/boj-tool/issues/3)) 우선 `selenium` branch에서 bugfix를 한 다음, 이를 `refactor` branch에서 리팩터링할 예정이다.
+> 현재 로그인이 되지 않는 상황이다. ([#3](https://github.com/sohnryang/boj-tool/issues/3), 백준이형이 캡차와 bot protection을 너무 빡세게 건 듯하다. ππ) 우선 `selenium` branch에서 bugfix를 한 다음, 이를 `refactor` branch에서 리팩터링할 예정이다.
 
 ## tl;dr 설치/사용 방법
 
