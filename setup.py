@@ -8,7 +8,7 @@ py_modules = [
     'colorama',
     'requests',
     'bs4',
-    'xdg'
+    'xdg==3.0.2'
 ]
 
 here = path.abspath(path.dirname(__file__))
