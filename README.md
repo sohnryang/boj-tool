@@ -7,6 +7,8 @@
 [![GitHub forks](https://img.shields.io/github/forks/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/network)
 [![GitHub issues](https://img.shields.io/github/issues/sohnryang/boj-tool.svg)](https://github.com/sohnryang/boj-tool/issues)
 
+> 현재 로그인이 되지 않는 상황이다. ([#3](https://github.com/sohnryang/boj-tool/issues/3)) 우선 `selenium` branch에서 bugfix를 한 다음, 이를 `refactor` branch에서 리팩터링할 예정이다.
+
 ## tl;dr 설치/사용 방법
 
 ### 설치
@@ -65,8 +67,9 @@ boj stats --user [유저 이름]
 - 디버깅을 위한 로깅 기능
 
 ## Roadmap
-- [ ] 리팩터링
-- [x] 전적 조회 기능
+- [ ] [#3](https://github.com/sohnryang/boj-tool/issues/3) fix @ `selenium` branch
+- [ ] 리팩터링 @ `refactor` branch
+- [x] ~~전적 조회 기능~~
 - [ ] 모든 언어 지원 (꼭 할것은 아님)
 
 ## 라이선스
